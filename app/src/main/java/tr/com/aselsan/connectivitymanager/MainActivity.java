@@ -27,8 +27,7 @@ public class MainActivity extends AppCompatActivity {
         icon = findViewById(R.id.icon);
 
         ConnectionManager connectionManager = ConnectionManager.getInstance(this);
-
-
+        connectionManager.register();
 
         connectionManager.getConnectionStatePublisher()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -70,6 +69,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("XXXXXX", throwable.toString());
                 });
 
-        connectionManager.register();
+
     }
 }

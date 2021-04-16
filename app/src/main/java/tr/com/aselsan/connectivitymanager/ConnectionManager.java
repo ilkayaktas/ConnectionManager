@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import io.reactivex.rxjava3.subjects.PublishSubject;
+import io.reactivex.rxjava3.subjects.BehaviorSubject;
 import lombok.Getter;
 
 /**
@@ -17,7 +17,15 @@ public class ConnectionManager {
     private static ConnectivityManager connectivityManager;
     private static Network currentNetwork;
     private static ConnectivityManager.NetworkCallback networkCallback;
-    @Getter private static PublishSubject<ConnectionState> connectionStatePublisher = PublishSubject.create();
+    @Getter private static BehaviorSubject<ConnectionState> connectionStatePublisher = BehaviorSubject.create();
+
+    public static ConnectionManager getInstance(){
+        if (connectionManager == null){
+            throw new IllegalArgumentException("getInstance(Context) should be called initially!");
+        } else{
+            return connectionManager;
+        }
+    }
 
     public static ConnectionManager getInstance(Context context){
         if (connectionManager == null){
@@ -72,7 +80,7 @@ public class ConnectionManager {
                 if (transport.equals("WIFI")){
                     connectionState.transport = Transport.WIFI;
                 } else if (transport.equals("CELLULAR")){
-                    if (networkCapabilities.getLinkDownstreamBandwidthKbps() < 10){
+                    if (networkCapabilities.getLinkDownstreamBandwidthKbps() < 15){
                         connectionState.transport = Transport.UNSTABLE;
                     } else if (networkCapabilities.getLinkDownstreamBandwidthKbps() < 300){
                         connectionState.transport = Transport.TWO_G;
